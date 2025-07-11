@@ -1,13 +1,20 @@
 ---
 title: "Final Practice"
 subtitle: "Section 03"
+author: 
+  name: "Eric Bidong Wakunga"
+  orcid: "0009-0001-3770-5405"
+  email: "eric.bidongsr@colorado.edu"
 format:
   html:
     embed-resources: true
-editor: visual
+    toc: true
+    toc-depth: 3
+    toc-title: "Table of Contents"
 execute: 
   echo: true
   warning: false
+editor: visual
 editor_options: 
   chunk_output_type: console
 ---
@@ -15,6 +22,7 @@ editor_options:
 ```{r}
 library(tidyverse)
 library(here)
+library(gt)
 ```
 
 ```{r}
@@ -30,10 +38,17 @@ treatment <- read_csv(here("data/what_a_waste/what-a-waste-city-level-data-treat
 How many cities are covered in this dataset?
 
 ```{r}
+#| label: headcount-cities
+#| tbl-cap: Headcount of cities in the dataset
 
-
-
+treatment |> 
+  group_by(city) |> 
+  summarise(count = n()) |> 
+  summarise(count = n()) |>
+  gt()
 ```
+
+<!--# There are 199 cities -->
 
 # Task 3.2
 
@@ -42,9 +57,16 @@ How many cities are covered in this dataset?
 In how many cities is all waste (100%) openly dumped?
 
 ```{r}
+#| label: city-all-waste-100-percent-openly-dumped
+#| tbl-cap: cities is all waste (100%) openly dumped
 
-
+treatment |> 
+  filter(waste_treatment == "open_dump" & percent == 100) |>  
+  summarise(count = n()) |>
+  gt()
 ```
+
+<!--# There 27 cities that all waste 100% openly dumped -->
 
 # Task 3.3
 
@@ -53,10 +75,17 @@ In how many cities is all waste (100%) openly dumped?
 How many cities in which no waste (0%) is recycled fall into each income category?
 
 ```{r}
+#| label: city-no-waste-0-percent-by-category
+#| tbl-cap: cities in which no waste (0%) is recycled fall into each income category
 
-
-
+treatment |> 
+  filter(waste_treatment == "recycling" & percent == 0) |> 
+  group_by(income_id) |> 
+  summarise(count = n())|>
+  gt()
 ```
+
+<!--# There are 7, 29, 44 and 27 cities for HIC, LIC, LMC and UMC respectively -->
 
 # Task 3.4
 
@@ -65,10 +94,20 @@ How many cities in which no waste (0%) is recycled fall into each income categor
 What is the mean, median, and standard deviation of treatment percentages for each waste treatment option and grouped by income?
 
 ```{r}
+#| label: mean-median-sd-of-treatment-percentages
+#| tbl-cap: Mean, median, and standard deviation of treatment percentages for each waste treatment option and grouped by income
 
-
-
+treatment |> 
+  group_by(waste_treatment, income_id) |>
+  summarise( 
+    mean = mean(percent),
+    median = median(percent), 
+    sd = sd(percent)
+  ) |>
+  gt()
 ```
+
+<!--# See the detail in the table following table -->
 
 # Task 3.5: Complete assignment
 
