@@ -1,13 +1,20 @@
 ---
 title: "Final Practice"
 subtitle: "Section 04"
+author: 
+  name: "Eric Bidong Wakunga"
+  orcid: "0009-0001-3770-5405"
+  email: "eric.bidongsr@colorado.edu"
 format:
   html:
     embed-resources: true
-editor: visual
+    toc: true
+    toc-depth: 3
+    toc-title: "Table of Contents"
 execute: 
   echo: true
   warning: false
+editor: visual
 editor_options: 
   chunk_output_type: console
 ---
@@ -30,7 +37,10 @@ treatment_mean <- read_csv(here("data/what_a_waste/what-a-waste-city-level-data-
 Reproduce the table that you see as an image below when you render the report and view the output in your Viewer tab in the bottom right window.
 
 ```{r}
-
+treatment_mean %>% 
+  pivot_wider(names_from = income_id, 
+              values_from = mean) |> 
+  knitr::kable(digits = 1)
 
 ```
 
@@ -50,7 +60,21 @@ Reproduce the plot that you see as an image below when you render the report and
 
 ```{r}
 
+treatment_mean_fct <- treatment_mean |> 
+  mutate(income_id = factor(income_id, levels = c("LIC", "LMC", "UMC", "HIC")))  
 
+ggplot(data = treatment_mean_fct,
+       mapping = aes(x = waste_treatment, y = mean, fill = waste_treatment)) + 
+  geom_col() + 
+  coord_flip() +
+  labs(title = "Waste Treatment", 
+       subtitle = "Mean percentages for countries by income regions", 
+       x = "mean (percent)", 
+       y = NULL) + 
+  scale_fill_brewer(type = "qual", palette = "Paired") +
+  scale_y_continuous(breaks = seq(0, 40, 5)) +
+  facet_wrap(~income_id) +
+  theme(legend.position = "none")
 
 ```
 
